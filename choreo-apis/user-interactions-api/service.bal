@@ -237,6 +237,7 @@ isolated function validateInteractionPayload(Interaction interaction) returns er
      }
 }
 
+# test comment
 isolated function calculateScoreIncrement(Interaction interaction) returns int {
 
     int scoreIncrement = (interaction.mobileSubscriptionVisits * eventWeights.get(MOBILE_SUBSCRIPTION_VISITS)) +
