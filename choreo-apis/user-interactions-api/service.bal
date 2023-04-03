@@ -13,7 +13,7 @@ type Interaction record {
     string email;
     int iotDevicesVisits;
     int mobileSubscriptionVisits;
-    int smartPhoneVisits;
+    int smartPhoneClicks;
     int tvSubscriptionVisits;
 };
 
@@ -60,7 +60,7 @@ service / on new http:Listener(9090) {
                 "properties": {
                     "iot_devices_visits" : iotDevicesVisits == () ? interaction.iotDevicesVisits : check int:fromString(iotDevicesVisits) + interaction.iotDevicesVisits,
                     "mobile_subscription_visits" : mobileSubscriptionVisits == () ? interaction.mobileSubscriptionVisits : check int:fromString(mobileSubscriptionVisits) + interaction.mobileSubscriptionVisits,
-                    "smartphone_visits": smartPhoneVisits == () ? interaction.smartPhoneVisits : check int:fromString(smartPhoneVisits) + interaction.smartPhoneVisits,
+                    "smartphone_visits": smartPhoneVisits == () ? interaction.smartPhoneClicks : check int:fromString(smartPhoneVisits) + interaction.smartPhoneClicks,
                     "tv_subscription_visits": tvSubscriptionVisits == () ? interaction.tvSubscriptionVisits : check int:fromString(tvSubscriptionVisits) + interaction.tvSubscriptionVisits,
                     "interaction_score": interactionScore == () ? scoreIncrement : check int:fromString(interactionScore) + scoreIncrement
                 }
@@ -232,7 +232,7 @@ isolated function getHubspotContacts(string category) returns contact:PublicObje
 isolated function validateInteractionPayload(Interaction interaction) returns error? {
 
     if (interaction.mobileSubscriptionVisits < 0 || interaction.iotDevicesVisits < 0 ||
-     interaction.smartPhoneVisits < 0 || interaction.tvSubscriptionVisits < 0) {
+     interaction.smartPhoneClicks < 0 || interaction.tvSubscriptionVisits < 0) {
          return error("Bad request.");
      }
 }
@@ -243,6 +243,6 @@ isolated function calculateScoreIncrement(Interaction interaction) returns int {
     int scoreIncrement = (interaction.mobileSubscriptionVisits * eventWeights.get(MOBILE_SUBSCRIPTION_VISITS)) +
         (interaction.iotDevicesVisits * eventWeights.get(IOT_DEVICES_VISITS)) +
         (interaction.tvSubscriptionVisits * eventWeights.get(TV_SUBSCRIPTION_VISITS)) +
-        (interaction.smartPhoneVisits * eventWeights.get(SMART_PHONE_VISITS));
+        (interaction.smartPhoneClicks * eventWeights.get(SMART_PHONE_VISITS));
     return scoreIncrement; 
 }
